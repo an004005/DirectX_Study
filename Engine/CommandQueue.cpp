@@ -1,17 +1,15 @@
 #include "pch.h"
 #include "CommandQueue.h"
 #include "SwapChain.h"
-#include "DescriptorHeap.h"
 
 CommandQueue::~CommandQueue()
 {
 	::CloseHandle(_fenceEvent);
 }
 
-void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain, shared_ptr<DescriptorHeap> descHeap)
+void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain)
 {
 	_swapChain = swapChain; // shared ptr로 ref가 1 증가한 상태로 공유가능
-	_descHeap = descHeap;
 
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -68,7 +66,7 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 
 	// 현재 backBuffer 리소스를 이동시켜서 gpu작업용도로 쓰겠다 라는 요청생성
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		_swapChain->GetCurrentBackBufferResource().Get(), // backBuffer resource를 받아온다.(swapchain은 리소스(특수종이)이다.)
+		_swapChain->GetBackRTVBuffer().Get(), // backBuffer resource를 받아온다.(swapchain은 리소스(특수종이)이다.)
 		D3D12_RESOURCE_STATE_PRESENT, // 화면 출력
 		D3D12_RESOURCE_STATE_RENDER_TARGET); // 외주 결과물
 	// 화면 출력용을 외주 결과물(gpu작업용)로 변환
@@ -80,7 +78,7 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	_cmdList->RSSetScissorRects(1, rect);
 
 	// Specify the buffers we are going to render to.
-	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = _descHeap->GetBackBufferView();
+	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = _swapChain->GetBackRTV();
 	// 아무것도 안하면 파랑 화면 출력(디폴트)
 	_cmdList->ClearRenderTargetView(backBufferView, Colors::LightSteelBlue, 0, nullptr);
 	_cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, nullptr);
@@ -89,7 +87,7 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 void CommandQueue::RenderEnd()
 {
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		_swapChain->GetCurrentBackBufferResource().Get(),
+		_swapChain->GetBackRTVBuffer().Get(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, // 외주 결과물
 		D3D12_RESOURCE_STATE_PRESENT); // 화면 출력
 	// gpu작업용을 화면출력용도로 다시 변환

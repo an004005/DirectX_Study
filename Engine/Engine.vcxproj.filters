@@ -30,9 +30,6 @@
     <ClCompile Include="SwapChain.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="DescriptorHeap.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -54,9 +51,6 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="SwapChain.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="DescriptorHeap.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

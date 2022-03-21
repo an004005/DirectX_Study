@@ -1,0 +1,9 @@
+Engine 정리
+Device: gpu에 실제 작업을 요청하는 클래스
+cmdQueue: gpu에 요청을 보낼때 요청을 한번에 모아서 보내기위한 큐
+swapChain: 더블 버퍼링을 둬서 gpu가 작업하는 버퍼와 화면에 띄우는 버퍼를 관리
+따라서 화면에는 항상 결과물만 보이고, 그리는 중간단계를 보이지 않는다.
+descHeap: 기안서, 어떤 리소스를 서술하는 용도.
+
+visualStudio 심볼 일괄변경: ctrl + r + r(double r)
+
