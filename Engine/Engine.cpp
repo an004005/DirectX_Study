@@ -20,10 +20,28 @@ void Engine::Init(const WindowInfo& window)
 	_descHeap = make_shared<DescriptorHeap>();
 
 	_device->init();
+	_cmdQueue->Init(_device->GetDevice(), _swapChain, _descHeap);
+	_swapChain->Init(window, _device->GetDXGI(), _cmdQueue->GetCmdQueue());
+	_descHeap->Init(_device->GetDevice(), _swapChain);
 }
 
 void Engine::Render()
 {
+	RenderBegin();
+
+	// TODO : 물체 그리는 부분
+
+	RenderEnd();
+}
+
+void Engine::RenderBegin()
+{
+	_cmdQueue->RenderBegin(&_viewport, &_scissorRect);
+}
+
+void Engine::RenderEnd()
+{
+	_cmdQueue->RenderEnd();
 }
 
 void Engine::ResizeWindow(int32 width, int32 height)

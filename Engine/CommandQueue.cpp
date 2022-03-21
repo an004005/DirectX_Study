@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "CommandQueue.h"
+#include "SwapChain.h"
+#include "DescriptorHeap.h"
 
 CommandQueue::~CommandQueue()
 {
@@ -57,4 +59,55 @@ void CommandQueue::WaitSync()
 		// Wait until the GPU hits current fence event is fired.
 		::WaitForSingleObject(_fenceEvent, INFINITE);
 	}
+}
+
+void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
+{
+	_cmdAlloc->Reset(); // std vector clear와 유사
+	_cmdList->Reset(_cmdAlloc.Get(), nullptr);
+
+	// 현재 backBuffer 리소스를 이동시켜서 gpu작업용도로 쓰겠다 라는 요청생성
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		_swapChain->GetCurrentBackBufferResource().Get(), // backBuffer resource를 받아온다.(swapchain은 리소스(특수종이)이다.)
+		D3D12_RESOURCE_STATE_PRESENT, // 화면 출력
+		D3D12_RESOURCE_STATE_RENDER_TARGET); // 외주 결과물
+	// 화면 출력용을 외주 결과물(gpu작업용)로 변환
+
+	_cmdList->ResourceBarrier(1, &barrier);
+
+	// Set the viewport and scissor rect.  This needs to be reset whenever the command list is reset.
+	_cmdList->RSSetViewports(1, vp);
+	_cmdList->RSSetScissorRects(1, rect);
+
+	// Specify the buffers we are going to render to.
+	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = _descHeap->GetBackBufferView();
+	// 아무것도 안하면 파랑 화면 출력(디폴트)
+	_cmdList->ClearRenderTargetView(backBufferView, Colors::LightSteelBlue, 0, nullptr);
+	_cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, nullptr);
+}
+
+void CommandQueue::RenderEnd()
+{
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		_swapChain->GetCurrentBackBufferResource().Get(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET, // 외주 결과물
+		D3D12_RESOURCE_STATE_PRESENT); // 화면 출력
+	// gpu작업용을 화면출력용도로 다시 변환
+
+	_cmdList->ResourceBarrier(1, &barrier);
+	_cmdList->Close();
+
+	// 커맨드 리스트 수행
+	ID3D12CommandList* cmdListArr[] = { _cmdList.Get() };
+	_cmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
+
+	_swapChain->Present();
+
+	// Wait until frame commands are complete.  This waiting is inefficient and is
+	// done for simplicity.  Later we will show how to organize our rendering code
+	// so we do not have to wait per frame.
+	WaitSync();
+
+	// backBuffer 변환
+	_swapChain->SwapIndex();
 }
