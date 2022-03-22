@@ -53,4 +53,14 @@ struct WindowInfo
 	bool	windowed; // 창모드 or 전체화면
 };
 
+struct Vertex
+{
+	Vec3 pos; // x, y, z
+	Vec4 color; // r, g ,b ,a
+};
+
+#define DEVICE		GEngine->GetDevice()->GetDevice()
+#define CMD_LIST	GEngine->GetCmdQueue()->GetCmdList()
+#define ROOT_SIGNATURE GEngine->GetRootSignature()->GetSignature()
+
 extern unique_ptr<class Engine> GEngine;

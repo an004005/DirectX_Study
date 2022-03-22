@@ -86,6 +86,7 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 
 void CommandQueue::RenderEnd()
 {
+	// 랜더할 준비 끝(이번 프레임에서 랜더할 부분 더 안받고 닫기)
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
 		_swapChain->GetBackRTVBuffer().Get(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, // 외주 결과물
@@ -95,7 +96,7 @@ void CommandQueue::RenderEnd()
 	_cmdList->ResourceBarrier(1, &barrier);
 	_cmdList->Close();
 
-	// 커맨드 리스트 수행
+	// 커맨드 리스트 수행(랜더 실행)
 	ID3D12CommandList* cmdListArr[] = { _cmdList.Get() };
 	_cmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
 
