@@ -47,6 +47,7 @@ private:
 
 	ComPtr<ID3D12Resource>	_rtvBuffer[SWAP_CHAIN_BUFFER_COUNT]; // 그릴 대상(2개)
 	// DH [ [VIEW], [VIEW] ] -> [ Resource ]
+	// View란 일종의 포인터처럼 다른 리소스를 가리키고 있음(디스크립터라고도 부름)
 	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;
 	D3D12_CPU_DESCRIPTOR_HANDLE		_rtvHandle[SWAP_CHAIN_BUFFER_COUNT];
 

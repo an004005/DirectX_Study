@@ -43,5 +43,14 @@ void Mesh::Render()
 	// cmdList에 랜더할 부분 예약
 	CMD_LIST->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView); // Slot: (0~15)
+
+	GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
+	GEngine->GetCB()->PushData(1, &_transform, sizeof(_transform));
+	// CMD_LIST->SetGraphicsRootConstantBufferView(0, )
+
 	CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0);
 }
+
+// 1) buffer(gpu램)에 데이터 셋팅(Mesh:init에서 함)
+// 2) buffer의 주소를 register에 전송(Mesh:Render에서 함)
+// buffer를 넣는시점과 register에 전송하는 시점이 다르기 때문에 이를 잘 고려하고 cmdQ를 사용하자

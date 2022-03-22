@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "CommandQueue.h"
-#include "SwapChain.h"
+#include "Engine.h"
 
 CommandQueue::~CommandQueue()
 {
@@ -70,6 +69,10 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 		D3D12_RESOURCE_STATE_PRESENT, // 화면 출력
 		D3D12_RESOURCE_STATE_RENDER_TARGET); // 외주 결과물
 	// 화면 출력용을 외주 결과물(gpu작업용)로 변환
+
+	// 서명사용한다 선언(signature)
+	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
+	GEngine->GetCB()->Clear();
 
 	_cmdList->ResourceBarrier(1, &barrier);
 
