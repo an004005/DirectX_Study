@@ -44,13 +44,25 @@ void Mesh::Render()
 	CMD_LIST->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView); // Slot: (0~15)
 
-	GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
-	GEngine->GetCB()->PushData(1, &_transform, sizeof(_transform));
-	// CMD_LIST->SetGraphicsRootConstantBufferView(0, )
+	D3D12_CPU_DESCRIPTOR_HANDLE handle = GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
+	GEngine->GetTableDescHeap()->SetCBV(handle, CBV_REGISTER::b0);
 
+
+	handle = GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
+	GEngine->GetTableDescHeap()->SetCBV(handle, CBV_REGISTER::b1);
+
+	GEngine->GetTableDescHeap()->CommitTable();
+		
 	CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0);
 }
 
+// Root Constant 사용할 때
 // 1) buffer(gpu램)에 데이터 셋팅(Mesh:init에서 함)
 // 2) buffer의 주소를 register에 전송(Mesh:Render에서 함)
 // buffer를 넣는시점과 register에 전송하는 시점이 다르기 때문에 이를 잘 고려하고 cmdQ를 사용하자
+
+// Table desc Heap 사용할 때
+// 1) buffer(gpu램)에 데이터 셋팅(Mesh:init에서 함)
+// 2) TableDescHeap에 CBV 전달
+// 3) 모든 세팅이 끝나면 TableDescHeap을 commit
+

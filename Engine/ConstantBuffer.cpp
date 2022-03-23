@@ -35,6 +35,7 @@ void ConstantBuffer::Init(uint32 size, uint32 count)
 	// 예시: 555를 size로 입력하면, _elementSize는 768이 됨
 
 	CreateBuffer();
+	CreateView();
 }
 
 void ConstantBuffer::CreateBuffer()
@@ -57,20 +58,47 @@ void ConstantBuffer::CreateBuffer()
 	// gpu가 해당부분 쓸 때는 건들면안됨, (현재는 WaitSync로 gpu동작중에는 그냥 기다려서 상관없음, 원시적)
 }
 
+void ConstantBuffer::CreateView()
+{
+	D3D12_DESCRIPTOR_HEAP_DESC cbvDesc = {};
+	cbvDesc.NumDescriptors = _elementCount; // 버퍼의 개수를 _elementCount만큼 만들기 때문
+	cbvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE; // cpu ram에 상주하도록 하는 플래그
+	cbvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	DEVICE->CreateDescriptorHeap(&cbvDesc, IID_PPV_ARGS(&_cbvHeap));
+
+	_cpuHandleBegin = _cbvHeap->GetCPUDescriptorHandleForHeapStart();
+	// gpu스펙마다 다를수 있기 때문에 이 함수 사용한다.
+	_handleIncrementSize = DEVICE->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	for (uint32 i = 0; i < _elementCount; ++i)
+	{
+		D3D12_CPU_DESCRIPTOR_HANDLE cbvHandle = GetCpuHandle(i);
+
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+		cbvDesc.BufferLocation = _cbvBuffer->GetGPUVirtualAddress() + static_cast<uint64>(_elementSize) * i;
+		cbvDesc.SizeInBytes = _elementSize;   // CB size is required to be 256-byte aligned.
+
+		DEVICE->CreateConstantBufferView(&cbvDesc, cbvHandle);
+	}
+}
+
 void ConstantBuffer::Clear()
 {
 	_currentIndex = 0; // 0으로 바꾸고, 다음 쓸 때는 덮어쓰기(매 프레임마다 새로 써주기 위함)
 }
 
-void ConstantBuffer::PushData(int32 rootParamIndex, void* buffer, uint32 size)
+D3D12_CPU_DESCRIPTOR_HANDLE ConstantBuffer::PushData(int32 rootParamIndex, void* buffer, uint32 size)
 {
 	assert(_currentIndex < _elementSize); // 버퍼 크기 체크
 
 	::memcpy(&_mappedBuffer[_currentIndex * _elementSize], buffer, size);
 
 	D3D12_GPU_VIRTUAL_ADDRESS address = GetGpuVirtualAddress(_currentIndex);
-	CMD_LIST->SetGraphicsRootConstantBufferView(rootParamIndex, address); // 레지스터에 버퍼주소 입력
+
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = GetCpuHandle(_currentIndex);
 	_currentIndex++;
+
+	return cpuHandle;
 }
 
 D3D12_GPU_VIRTUAL_ADDRESS ConstantBuffer::GetGpuVirtualAddress(uint32 index)
@@ -78,4 +106,9 @@ D3D12_GPU_VIRTUAL_ADDRESS ConstantBuffer::GetGpuVirtualAddress(uint32 index)
 	D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = _cbvBuffer->GetGPUVirtualAddress();
 	objCBAddress += index * _elementSize;
 	return objCBAddress;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE ConstantBuffer::GetCpuHandle(uint32 index)
+{
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(_cpuHandleBegin, index * _handleIncrementSize);
 }
