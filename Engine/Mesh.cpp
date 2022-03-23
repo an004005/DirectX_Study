@@ -19,6 +19,9 @@ void Mesh::Render()
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
 	GEngine->GetTableDescHeap()->SetCBV(handle, CBV_REGISTER::b0);
 
+	GEngine->GetTableDescHeap()->SetSRV(_tex->GetCpuHandle(), SRV_REGISTER::t0);
+
+
 	GEngine->GetTableDescHeap()->CommitTable();
 		
 	// CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0);
