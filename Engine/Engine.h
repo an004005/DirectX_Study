@@ -23,7 +23,9 @@ public:
 	void Init(const WindowInfo& window);
 	void Render();
 
+public:
 	void Update();
+	void LateUpdate();
 
 	// cmd q에 요청사항일 넣는 함수
 	void RenderBegin();

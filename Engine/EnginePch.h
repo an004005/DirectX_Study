@@ -101,11 +101,6 @@ struct Vertex
 	Vec2 uv;
 };
 
-struct Transform
-{
-	Vec4 offset;
-};
-
 // DEVICE를 통해 무언가 하면 당장 실행됨
 #define DEVICE		GEngine->GetDevice()->GetDevice()
 // CMD_LIST를 통해 무언가 하면 나중에 모아서 execute할 때 실행됨

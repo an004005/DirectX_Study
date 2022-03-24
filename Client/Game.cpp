@@ -3,7 +3,11 @@
 #include "Engine.h"
 #include "Material.h"
 
-shared_ptr<Mesh> mesh = make_shared<Mesh>();
+#include "GameObject.h"
+#include "MeshRenderer.h"
+
+
+shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 
 
 void Game::Init(const WindowInfo& info)
@@ -37,7 +41,13 @@ void Game::Init(const WindowInfo& info)
 		indexVec.push_back(3);
 	}
 
+	gameObject->Init(); // transform 초기화
+
+	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+
+	shared_ptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, indexVec);// gpu에 버퍼 및 뷰 입력
+	meshRenderer->SetMesh(mesh);
 
 	shared_ptr<Shader> shader = make_shared<Shader>();
 	shared_ptr<Texture> texture = make_shared<Texture>();
@@ -50,7 +60,9 @@ void Game::Init(const WindowInfo& info)
 	material->SetFloat(1, 0.2f);
 	material->SetFloat(2, 0.3f);
 	material->SetTexture(0, texture);
-	mesh->SetMaterial(material);
+	meshRenderer->SetMaterial(material);
+
+	gameObject->AddComponent(meshRenderer);
 
 	GEngine->GetCmdQueue()->WaitSync();
 }
@@ -60,35 +72,7 @@ void Game::Update()
 	GEngine->Update();
 	GEngine->RenderBegin();
 
-
-	{
-		static Transform t = {};
-
-		if (INPUT->GetButton(KEY_TYPE::W))
-			t.offset.y += 1.f * DELTA_TIME;
-		if (INPUT->GetButton(KEY_TYPE::S))
-			t.offset.y -= 1.f * DELTA_TIME;
-		if (INPUT->GetButton(KEY_TYPE::A))
-			t.offset.x -= 1.f * DELTA_TIME;
-		if (INPUT->GetButton(KEY_TYPE::D))
-			t.offset.x += 1.f * DELTA_TIME;
-
-		mesh->SetTransform(t);
-
-
-		mesh->Render();
-	}
-
-	/*{
-		Transform t;
-		t.offset = Vec4(0.25f, 0.25f, -0.1f, 0.f);
-		mesh->SetTransform(t);
-		mesh->SetTexture(texture);
-		mesh->Render();
-	}*/
-
-
-	mesh->Render();
+	gameObject->Update();
 
 	GEngine->RenderEnd();
 }

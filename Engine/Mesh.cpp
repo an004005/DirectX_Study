@@ -17,9 +17,6 @@ void Mesh::Render()
 	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView); // Slot: (0~15)
 	CMD_LIST->IASetIndexBuffer(&_indexBufferView);
 
-	CONST_BUFFER(CONSTANT_BUFFER_TYPE::TRANSFORM)->PushData(&_transform, sizeof(_transform));
-	_mat->Update();
-
 	GEngine->GetTableDescHeap()->CommitTable();
 		
 	// CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0);
