@@ -36,6 +36,7 @@ VS_OUT VS_Main(VS_IN input) // vertex shader 단계에서 할 일
 	VS_OUT output = (VS_OUT)0;
 
 	output.pos = float4(input.pos, 1.f); // 마지막 값만 1로 채워서 float4로 만듬
+	output.pos += offset0;
 	output.color = input.color; // 컬러 안바꿈
 	output.uv = input.uv;
 	
