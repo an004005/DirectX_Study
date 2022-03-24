@@ -19,10 +19,15 @@ void Input::Update()
 		return;
 	}
 
+	BYTE asciiKeys[KEY_TYPE_COUNT] = {};
+	if (::GetKeyboardState(asciiKeys) == false)
+		return;
+
 	for (uint32 key = 0; key < KEY_TYPE_COUNT; key++)
 	{
 		// 키가 눌려 있으면 true
-		if (::GetAsyncKeyState(key) & 0x8000)
+		// high order bit가 1이면 key가 down상태이다. (0000 0000)에서 (1000 0000) 이면 눌린 상태
+		if (asciiKeys[key] & 0x80)
 		{
 			KEY_STATE& state = _states[key];
 
