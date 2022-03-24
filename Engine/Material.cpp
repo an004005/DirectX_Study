@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Material.h"
 #include "Engine.h"
+#include "Texture.h"
+#include "Shader.h"
 
 void Material::Update()
 {

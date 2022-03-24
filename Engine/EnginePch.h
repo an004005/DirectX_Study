@@ -101,6 +101,21 @@ struct Vertex
 	Vec2 uv;
 };
 
+// singleton macro
+#define DECLARE_SINGLE(type)		\
+private:							\
+	type() {}						\
+	~type() {}						\
+public:								\
+	static type* GetInstance()		\
+	{								\
+		static type instance;		\
+		return &instance;			\
+	}								\
+
+#define GET_SINGLE(type) type::GetInstance()
+
+
 // DEVICE를 통해 무언가 하면 당장 실행됨
 #define DEVICE		GEngine->GetDevice()->GetDevice()
 // CMD_LIST를 통해 무언가 하면 나중에 모아서 execute할 때 실행됨
@@ -108,8 +123,8 @@ struct Vertex
 #define RESOURCE_CMD_LIST GEngine->GetCmdQueue()->GetResourceCmdList()
 #define ROOT_SIGNATURE GEngine->GetRootSignature()->GetSignature()
 
-#define INPUT GEngine->GetInput()
-#define DELTA_TIME GEngine->GetTimer()->GetDeltaTime()
+#define INPUT GET_SINGLE(Input)
+#define DELTA_TIME GET_SINGLE(Timer)->GetDeltaTime()
 
 #define CONST_BUFFER(type) GEngine->GetConstantBuffer(type)
 

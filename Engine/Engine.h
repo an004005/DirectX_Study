@@ -7,25 +7,18 @@
 #include "CommandQueue.h"
 #include "SwapChain.h"
 #include "RootSignature.h"
-#include "Mesh.h"
-#include "Shader.h"
-#include "Texture.h"
 #include "ConstantBuffer.h"
 #include "TableDescriptorHeap.h"
 #include "DepthStencilBuffer.h"
-
-#include "Timer.h"
-#include "Input.h"
 
 class Engine
 {
 public:
 	void Init(const WindowInfo& window);
-	void Render();
+	void Update();
 
 public:
-	void Update();
-	void LateUpdate();
+	void Render();
 
 	// cmd q에 요청사항일 넣는 함수
 	void RenderBegin();
@@ -41,9 +34,6 @@ public:
 	shared_ptr<RootSignature> GetRootSignature() { return _rootSignature;  }
 	shared_ptr<TableDescriptorHeap> GetTableDescHeap() { return _tableDescHeap;  }
 	shared_ptr<DepthStencilBuffer> GetDepthStencilBuffer() { return _depthStencilBuffer;  }
-
-	shared_ptr<Input> GetInput() { return _input; }
-	shared_ptr<Timer> GetTimer() { return _timer; }
 
 	shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return _constantBuffers[static_cast<uint8>(type)]; }
 
@@ -64,9 +54,6 @@ private:
 	shared_ptr<RootSignature> _rootSignature = make_shared<RootSignature>();
 	shared_ptr<TableDescriptorHeap> _tableDescHeap = make_shared<TableDescriptorHeap>();
 	shared_ptr<DepthStencilBuffer> _depthStencilBuffer = make_shared<DepthStencilBuffer>();
-
-	shared_ptr<Input> _input = make_shared<Input>();
-	shared_ptr<Timer> _timer = make_shared<Timer>();
 
 	vector<shared_ptr<ConstantBuffer>> _constantBuffers;
 };
