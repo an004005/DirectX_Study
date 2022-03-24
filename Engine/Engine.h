@@ -14,11 +14,16 @@
 #include "TableDescriptorHeap.h"
 #include "DepthStencilBuffer.h"
 
+#include "Timer.h"
+#include "Input.h"
+
 class Engine
 {
 public:
 	void Init(const WindowInfo& window);
 	void Render();
+
+	void Update();
 
 	// cmd q에 요청사항일 넣는 함수
 	void RenderBegin();
@@ -35,18 +40,28 @@ public:
 	shared_ptr<ConstantBuffer> GetCB() { return _cb; }
 	shared_ptr<TableDescriptorHeap> GetTableDescHeap() { return _tableDescHeap;  }
 	shared_ptr<DepthStencilBuffer> GetDepthStencilBuffer() { return _depthStencilBuffer;  }
+
+	shared_ptr<Input> GetInput() { return _input; }
+	shared_ptr<Timer> GetTimer() { return _timer; }
+
+private:
+	void ShowFps();
+
 private:
 	// 그려질 화면 크기 관련
 	WindowInfo		_window;
 	D3D12_VIEWPORT	_viewport = {};
 	D3D12_RECT		_scissorRect = {};
 
-	shared_ptr<Device> _device;
-	shared_ptr<CommandQueue> _cmdQueue;
-	shared_ptr<SwapChain> _swapChain;
-	shared_ptr<RootSignature> _rootSignature;
-	shared_ptr<ConstantBuffer> _cb;
-	shared_ptr<TableDescriptorHeap> _tableDescHeap;
-	shared_ptr<DepthStencilBuffer> _depthStencilBuffer;
+	shared_ptr<Device> _device = make_shared<Device>();
+	shared_ptr<CommandQueue> _cmdQueue = make_shared<CommandQueue>();
+	shared_ptr<SwapChain> _swapChain = make_shared<SwapChain>();
+	shared_ptr<RootSignature> _rootSignature = make_shared<RootSignature>();
+	shared_ptr<ConstantBuffer> _cb = make_shared<ConstantBuffer>();
+	shared_ptr<TableDescriptorHeap> _tableDescHeap = make_shared<TableDescriptorHeap>();
+	shared_ptr<DepthStencilBuffer> _depthStencilBuffer = make_shared<DepthStencilBuffer>();
+
+	shared_ptr<Input> _input = make_shared<Input>();
+	shared_ptr<Timer> _timer = make_shared<Timer>();
 };
 
