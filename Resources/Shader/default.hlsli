@@ -36,14 +36,12 @@ SamplerState sam_0: register(s0);
 struct VS_IN
 {
 	float3 pos : POSITION;
-	float4 color : COLOR;
 	float2 uv : TEXCOORD;
 };
 
 struct VS_OUT
 {
 	float4 pos : SV_Position;
-	float4 color : COLOR;
 	float2 uv : TEXCOORD;
 };
 
@@ -52,7 +50,6 @@ VS_OUT VS_Main(VS_IN input) // vertex shader 단계에서 할 일
 	VS_OUT output = (VS_OUT)0;
 
 	output.pos = mul(float4(input.pos, 1.f), matWVP); // 마지막 값만 1로 채워서 좌표의 개념으로 사용(0이면 방향성만사용)
-	output.color = input.color; // 컬러 안바꿈
 	output.uv = input.uv;
 	
 	return output;

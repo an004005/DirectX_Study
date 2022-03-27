@@ -4,6 +4,15 @@
 #include "Texture.h"
 #include "Shader.h"
 
+Material::Material() : Object(OBJECT_TYPE::MATERIAL)
+{
+}
+
+Material::~Material()
+{
+}
+
+
 void Material::PushData()
 {
 	// CBV ¾÷·Îµå

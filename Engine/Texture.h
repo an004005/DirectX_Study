@@ -1,8 +1,12 @@
 #pragma once
+#include "Object.h"
 
-class Texture
+class Texture : public Object
 {
 public:
+	Texture();
+	virtual ~Texture();
+
 	void Init(const wstring& path);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCpuHandle() { return _srvHandle; }
@@ -17,5 +21,5 @@ private:
 
 	ComPtr<ID3D12DescriptorHeap>	_srvHeap;
 	// texture view는 하나만 있으면 됨.
-	D3D12_CPU_DESCRIPTOR_HANDLE		_srvHandle;
+	D3D12_CPU_DESCRIPTOR_HANDLE		_srvHandle = {};
 };

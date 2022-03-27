@@ -97,9 +97,16 @@ struct WindowInfo
 
 struct Vertex
 {
+	Vertex() {}
+
+	Vertex(Vec3 p, Vec2 u, Vec3 n, Vec3 t)
+		: pos(p), uv(u), normal(n), tangent(t)
+	{}
+
 	Vec3 pos; // x, y, z
-	Vec4 color; // r, g ,b ,a
 	Vec2 uv;
+	Vec3 normal;
+	Vec3 tangent;
 };
 
 // singleton macro
