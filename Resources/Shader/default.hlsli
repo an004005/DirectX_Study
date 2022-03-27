@@ -3,9 +3,12 @@
 // 위 문서 첫번째 그림의 b0(레지스터의 이름)
 // constant buffer로 사용하는 레지스터는 b로 시작함
 // 그림의 노란부분은 어떤 용도로 쓸지 정함(타입)
-cbuffer TEST_B0 : register(b0)
+cbuffer TRANSFORM_PARAMS : register(b0)
 {
-	float4 offset0;
+	// row_major : matrix규직을 dx기준으로 사용하기 위함(dx는 행렬 접근시 가로방향으로
+	// shader에서는 세로방향으로 접근하는데, shader도 가로방향으로 접근하라는 힌트를 준것임
+	row_major matrix matWVP;
+	
 };
 
 cbuffer MATERIAL_PARAMS : register(b1)
@@ -48,12 +51,7 @@ VS_OUT VS_Main(VS_IN input) // vertex shader 단계에서 할 일
 {
 	VS_OUT output = (VS_OUT)0;
 
-	output.pos = float4(input.pos, 1.f); // 마지막 값만 1로 채워서 float4로 만듬
-	//output.pos += offset0;
-	output.pos.x += float_0;
-	output.pos.y += float_1;
-	output.pos.z += float_2;
-
+	output.pos = mul(float4(input.pos, 1.f), matWVP); // 마지막 값만 1로 채워서 좌표의 개념으로 사용(0이면 방향성만사용)
 	output.color = input.color; // 컬러 안바꿈
 	output.uv = input.uv;
 	

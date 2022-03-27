@@ -4,7 +4,7 @@
 #include "Texture.h"
 #include "Shader.h"
 
-void Material::Update()
+void Material::PushData()
 {
 	// CBV ¾÷·Îµå
 	CONST_BUFFER(CONSTANT_BUFFER_TYPE::MATERIAL)->PushData(&_params, sizeof(_params));
