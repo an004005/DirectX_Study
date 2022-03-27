@@ -17,7 +17,7 @@ public:
 	const Vec3& GetLocalScale() { return _localScale; }
 
 	const Matrix& GetLocalToWorldMatrix() { return _matWorld; }
-	const Vec3& GetWorldPosition() { return _matWorld.Translation(); } // world 포시지션은 world로 가는 행렬에서 translation부분 추출한것
+	Vec3 GetWorldPosition() { return _matWorld.Translation(); } // world 포시지션은 world로 가는 행렬에서 translation부분 추출한것
 
 	Vec3 GetRight() { return _matWorld.Right(); }
 	Vec3 GetUp() { return _matWorld.Up(); }

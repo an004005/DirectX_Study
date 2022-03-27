@@ -138,7 +138,11 @@ public:								\
 
 struct TransformParams
 {
-	Matrix matWVP; // world, view, project 한번에 변환하는 매트릭스
+	Matrix matWorld;
+	Matrix matView;
+	Matrix matProjection;
+	Matrix matWV;
+	Matrix matWVP;
 };
 
 extern unique_ptr<class Engine> GEngine;
