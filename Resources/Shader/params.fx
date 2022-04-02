@@ -1,5 +1,5 @@
-#ifndef _PARAMS_HLSLI_
-#define _PARAMS_HLSLI_
+#ifndef _PARAMS_FX_
+#define _PARAMS_FX_
 
 // https://docs.microsoft.com/en-us/windows/win32/direct3d12/example-root-signatures
 // 위 문서 첫번째 그림의 b0(레지스터의 이름)

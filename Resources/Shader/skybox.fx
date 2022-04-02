@@ -1,6 +1,6 @@
-#ifndef _SKYBOX_HLSLI_
-#define _SKYBOX_HLSLI_
-#include "params.hlsli"
+#ifndef _SKYBOX_FX_
+#define _SKYBOX_FX_
+#include "params.fx"
 
 struct VS_IN
 {

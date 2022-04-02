@@ -1,5 +1,6 @@
-#ifndef _UTILS_HLSLI_
-#define _UTILS_HLSLI_
+#ifndef _UTILS_FX_
+#define _UTILS_FX_
+#include "params.fx"
 
 // 몇번째 광원인지, view space기준 normal과 view space 기준 position가져옴
 LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos)
