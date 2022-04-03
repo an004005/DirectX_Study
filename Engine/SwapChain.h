@@ -32,25 +32,13 @@ public:
 	void SwapIndex();
 
 	ComPtr<IDXGISwapChain> GetSwapChain() { return _swapChain; }
-	ComPtr<ID3D12Resource> GetRenderTarget(int32 index) { return _rtvBuffer[index]; }
-
-	ComPtr<ID3D12Resource> GetBackRTVBuffer() { return _rtvBuffer[_backBufferIndex]; }
-
-	D3D12_CPU_DESCRIPTOR_HANDLE GetBackRTV() { return _rtvHandle[_backBufferIndex]; }
+	uint8 GetBackBufferIndex() { return _backBufferIndex; }
 
 private:
 	void CreateSwapChain(const WindowInfo& info, ComPtr<IDXGIFactory> dxgi, ComPtr<ID3D12CommandQueue> cmdQueue);
-	void CreateRTV(ComPtr<ID3D12Device> device);
 
 private:
 	ComPtr<IDXGISwapChain>	_swapChain;
-
-	ComPtr<ID3D12Resource>	_rtvBuffer[SWAP_CHAIN_BUFFER_COUNT]; // 그릴 대상(2개)
-	// DH [ [VIEW], [VIEW] ] -> [ Resource ]
-	// View란 일종의 포인터처럼 다른 리소스를 가리키고 있음(디스크립터라고도 부름)
-	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;
-	D3D12_CPU_DESCRIPTOR_HANDLE		_rtvHandle[SWAP_CHAIN_BUFFER_COUNT];
-
 	// 현재 뒷 작업(BackBuffer) 중인 대상 추적(0,1 이 계속 변경됨)
 	uint32					_backBufferIndex = 0;
 };

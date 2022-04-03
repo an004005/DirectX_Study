@@ -68,9 +68,11 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	_cmdAlloc->Reset(); // std vector clear와 유사
 	_cmdList->Reset(_cmdAlloc.Get(), nullptr);
 
+	int8 backIndex = _swapChain->GetBackBufferIndex();
+
 	// 현재 backBuffer 리소스를 이동시켜서 gpu작업용도로 쓰겠다 라는 요청생성
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		_swapChain->GetBackRTVBuffer().Get(), // backBuffer resource를 받아온다.(swapchain은 리소스(특수종이)이다.)
+		GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->GetRTTexture(backIndex)->GetTex2D().Get(),
 		D3D12_RESOURCE_STATE_PRESENT, // 화면 출력
 		D3D12_RESOURCE_STATE_RENDER_TARGET); // 외주 결과물
 	// 화면 출력용을 외주 결과물(gpu작업용)로 변환
@@ -89,21 +91,15 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	// Set the viewport and scissor rect.  This needs to be reset whenever the command list is reset.
 	_cmdList->RSSetViewports(1, vp);
 	_cmdList->RSSetScissorRects(1, rect);
-
-	// Specify the buffers we are going to render to.
-	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = _swapChain->GetBackRTV();
-	D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = GEngine->GetDepthStencilBuffer()->GetDSVCpuHandle();
-	// 아무것도 안하면 파랑 화면 출력(디폴트)
-	_cmdList->ClearRenderTargetView(backBufferView, Colors::Black, 0, nullptr);
-	_cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, &depthStencilView);
-	_cmdList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
 void CommandQueue::RenderEnd()
 {
+	int8 backIndex = _swapChain->GetBackBufferIndex();
+
 	// 랜더할 준비 끝(이번 프레임에서 랜더할 부분 더 안받고 닫기)
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		_swapChain->GetBackRTVBuffer().Get(),
+		GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->GetRTTexture(backIndex)->GetTex2D().Get(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, // 외주 결과물
 		D3D12_RESOURCE_STATE_PRESENT); // 화면 출력
 	// gpu작업용을 화면출력용도로 다시 변환
