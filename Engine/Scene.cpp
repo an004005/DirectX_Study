@@ -5,14 +5,11 @@
 #include "Engine.h"
 #include "ConstantBuffer.h"
 #include "Light.h"
-#include "Material.h"
 #include "Engine.h"
 #include "Resources.h"
 
 void Scene::Awake()
 {
-	// const shared_ptr& 형식을 사용하는 의미:
-	// reference로 받으면 shared_ptr의 ref count가 증가하지 않음
 	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
 		gameObject->Awake();
@@ -58,16 +55,14 @@ void Scene::Render()
 	// SwapChain Group 초기화
 	int8 backIndex = GEngine->GetSwapChain()->GetBackBufferIndex();
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->ClearRenderTargetView(backIndex);
-
 	// Deferred Group 초기화
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->ClearRenderTargetView();
-
 	// Lighting Group 초기화
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->ClearRenderTargetView();
 
 	// Deferred OMSet
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
-
+	
 	shared_ptr<Camera> mainCamera = _cameras[0];
 	mainCamera->SortGameObject();
 	mainCamera->Render_Deferred();
@@ -107,7 +102,7 @@ void Scene::RenderFinal()
 	int8 backIndex = GEngine->GetSwapChain()->GetBackBufferIndex();
 	GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets(1, backIndex);
 
-	GET_SINGLE(Resources)->Get<Material>(L"Final")->PushData();
+	GET_SINGLE(Resources)->Get<Material>(L"Final")->PushGraphicsData();
 	GET_SINGLE(Resources)->Get<Mesh>(L"Rectangle")->Render();
 }
 
@@ -124,7 +119,8 @@ void Scene::PushLightData()
 		lightParams.lights[lightParams.lightCount] = lightInfo;
 		lightParams.lightCount++;
 	}
-	CONST_BUFFER(CONSTANT_BUFFER_TYPE::GLOBAL)->SetGlobalData(&lightParams, sizeof(lightParams));
+
+	CONST_BUFFER(CONSTANT_BUFFER_TYPE::GLOBAL)->SetGraphicsGlobalData(&lightParams, sizeof(lightParams));
 }
 
 void Scene::AddGameObject(shared_ptr<GameObject> gameObject)
@@ -160,4 +156,3 @@ void Scene::RemoveGameObject(shared_ptr<GameObject> gameObject)
 	if (findIt != _gameObjects.end())
 		_gameObjects.erase(findIt);
 }
-

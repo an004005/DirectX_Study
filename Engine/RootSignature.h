@@ -1,23 +1,20 @@
 #pragma once
 
-// 계약서/ 결재 단계에 해당함.
-
-// cpu [ ] , gpu [ ]
-// 한국 [ ] 베트남 [ ]
-// cpu에 있는 정보를 gpu에 
-
 class RootSignature
 {
 public:
 	void Init();
-	ComPtr<ID3D12RootSignature>	GetSignature() { return _signature; }
+
+	ComPtr<ID3D12RootSignature>	GetGraphicsRootSignature() { return _graphicsRootSignature; }
+	ComPtr<ID3D12RootSignature>	GetComputeRootSignature() { return _computeRootSignature; }
 
 private:
-	void CreateSamplerDesc();
-	void CreateRootSignature();
+	void CreateGraphicsRootSignature();
+	void CreateComputeRootSignature();
 
 private:
-	ComPtr<ID3D12RootSignature> _signature;
-	D3D12_STATIC_SAMPLER_DESC _samplerDesc;
+	D3D12_STATIC_SAMPLER_DESC	_samplerDesc; 
+	ComPtr<ID3D12RootSignature>	_graphicsRootSignature;	
+	ComPtr<ID3D12RootSignature>	_computeRootSignature;
 };
 

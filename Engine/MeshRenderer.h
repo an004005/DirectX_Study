@@ -15,7 +15,6 @@ public:
 	void SetMesh(shared_ptr<Mesh> mesh) { _mesh = mesh; }
 	void SetMaterial(shared_ptr<Material> material) { _material = material; }
 
-
 	void Render();
 
 private:

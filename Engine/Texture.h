@@ -7,25 +7,24 @@ public:
 	Texture();
 	virtual ~Texture();
 
-	// resource가 있는 텍스쳐 만들기(이미지 불르기)
 	virtual void Load(const wstring& path) override;
 
-	// 처음부터 텍스쳐 만드는 함수 
+public:
 	void Create(DXGI_FORMAT format, uint32 width, uint32 height,
 		const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags,
 		D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor = Vec4());
 
 	void CreateFromResource(ComPtr<ID3D12Resource> tex2D);
 
-
+public:
 	ComPtr<ID3D12Resource> GetTex2D() { return _tex2D; }
 	ComPtr<ID3D12DescriptorHeap> GetSRV() { return _srvHeap; }
 	ComPtr<ID3D12DescriptorHeap> GetRTV() { return _rtvHeap; }
 	ComPtr<ID3D12DescriptorHeap> GetDSV() { return _dsvHeap; }
+	ComPtr<ID3D12DescriptorHeap> GetUAV() { return _uavHeap; }
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVHandle() { return _srvHeapBegin; }
-public:
-
+	D3D12_CPU_DESCRIPTOR_HANDLE GetUAVHandle() { return _uavHeapBegin; }
 
 private:
 	ScratchImage			 		_image;
@@ -34,7 +33,10 @@ private:
 	ComPtr<ID3D12DescriptorHeap>	_srvHeap;
 	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;
 	ComPtr<ID3D12DescriptorHeap>	_dsvHeap;
+	ComPtr<ID3D12DescriptorHeap>	_uavHeap;
 
-	// texture view는 하나만 있으면 됨.
+private:
 	D3D12_CPU_DESCRIPTOR_HANDLE		_srvHeapBegin = {};
+	D3D12_CPU_DESCRIPTOR_HANDLE		_uavHeapBegin = {};
 };
+

@@ -5,7 +5,7 @@
 enum class PROJECTION_TYPE
 {
 	PERSPECTIVE, // 원근 투영
-	ORTHOGRAPHIC, // 직교 투영, 원근법 안씀
+	ORTHOGRAPHIC, // 직교 투영
 };
 
 class Camera : public Component
@@ -38,9 +38,9 @@ public:
 private:
 	PROJECTION_TYPE _type = PROJECTION_TYPE::PERSPECTIVE;
 
-	float _near = 1.f; // n
-	float _far = 1000.f; // f
-	float _fov = XM_PI / 4.f; // 찍는 영역
+	float _near = 1.f;
+	float _far = 1000.f;
+	float _fov = XM_PI / 4.f;
 	float _scale = 1.f;
 
 	Matrix _matView = {};

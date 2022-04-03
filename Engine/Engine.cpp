@@ -8,18 +8,21 @@
 #include "Light.h"
 #include "Resources.h"
 
-void Engine::Init(const WindowInfo& window)
+void Engine::Init(const WindowInfo& info)
 {
-	_window = window;
+	_window = info;	
 
-	_viewport = { 0, 0, static_cast<FLOAT>(window.width), static_cast<FLOAT>(window.height), 0.0f, 1.0f };
-	_scissorRect = CD3DX12_RECT(0, 0, window.width, window.height);
+	// 그려질 화면 크기를 설정
+	_viewport = { 0, 0, static_cast<FLOAT>(info.width), static_cast<FLOAT>(info.height), 0.0f, 1.0f };
+	_scissorRect = CD3DX12_RECT(0, 0, info.width, info.height);
 
-	_device->init();
-	_cmdQueue->Init(_device->GetDevice(), _swapChain);
-	_swapChain->Init(window, _device->GetDevice(), _device->GetDXGI(), _cmdQueue->GetCmdQueue());
+	_device->Init();
+	_graphicsCmdQueue->Init(_device->GetDevice(), _swapChain);
+	_computeCmdQueue->Init(_device->GetDevice());
+	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _graphicsCmdQueue->GetCmdQueue());
 	_rootSignature->Init();
-	_tableDescHeap->Init(256);
+	_graphicsDescHeap->Init(256);
+	_computeDescHeap->Init();
 
 	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(LightParams), 1);
 	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(TransformParams), 256);
@@ -27,9 +30,9 @@ void Engine::Init(const WindowInfo& window)
 
 	CreateRenderTargetGroups();
 
-	ResizeWindow(window.width, window.height);
+	ResizeWindow(info.width, info.height);
 
-	GET_SINGLE(Input)->Init(window.hwnd);
+	GET_SINGLE(Input)->Init(info.hwnd);
 	GET_SINGLE(Timer)->Init();
 	GET_SINGLE(Resources)->Init();
 }
@@ -48,19 +51,20 @@ void Engine::Update()
 void Engine::Render()
 {
 	RenderBegin();
+
 	GET_SINGLE(SceneManager)->Render();
+
 	RenderEnd();
 }
 
-
 void Engine::RenderBegin()
 {
-	_cmdQueue->RenderBegin(&_viewport, &_scissorRect);
+	_graphicsCmdQueue->RenderBegin(&_viewport, &_scissorRect);
 }
 
 void Engine::RenderEnd()
 {
-	_cmdQueue->RenderEnd();
+	_graphicsCmdQueue->RenderEnd();
 }
 
 void Engine::ResizeWindow(int32 width, int32 height)
@@ -71,7 +75,6 @@ void Engine::ResizeWindow(int32 width, int32 height)
 	RECT rect = { 0, 0, width, height };
 	::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 	::SetWindowPos(_window.hwnd, 0, 100, 100, width, height, 0);
-	// :: 을 붙인 의미는 큰 의미는 없고 표준 라이브러리의 windows기능 사용이라는 의미
 }
 
 void Engine::ShowFps()
@@ -93,6 +96,7 @@ void Engine::CreateConstantBuffer(CBV_REGISTER reg, uint32 bufferSize, uint32 co
 	buffer->Init(reg, bufferSize, count);
 	_constantBuffers.push_back(buffer);
 }
+
 
 void Engine::CreateRenderTargetGroups()
 {

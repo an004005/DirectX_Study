@@ -29,7 +29,7 @@ public:
 	void SetName(const wstring& name) { _name = name; }
 	const wstring& GetName() { return _name; }
 
-	// TODO : Instantiate, object의 클론을 만드는 함수
+	// TODO : Instantiate
 
 protected:
 	friend class Resources;

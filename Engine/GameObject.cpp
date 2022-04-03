@@ -6,7 +6,6 @@
 #include "Light.h"
 #include "MonoBehaviour.h"
 
-
 GameObject::GameObject() : Object(OBJECT_TYPE::GAMEOBJECT)
 {
 
@@ -82,6 +81,13 @@ void GameObject::FinalUpdate()
 	}
 }
 
+shared_ptr<Component> GameObject::GetFixedComponent(COMPONENT_TYPE type)
+{
+	uint8 index = static_cast<uint8>(type);
+	assert(index < FIXED_COMPONENT_COUNT);
+	return _components[index];
+}
+
 shared_ptr<Transform> GameObject::GetTransform()
 {
 	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::TRANSFORM);
@@ -106,11 +112,8 @@ shared_ptr<Light> GameObject::GetLight()
 	return static_pointer_cast<Light>(component);
 }
 
-
 void GameObject::AddComponent(shared_ptr<Component> component)
 {
-	// 자기 자신을 shared_ptr로 주기 위해서 enable_shared_from_thie 상속
-	// 내부적으로 weak_ptr사용함.
 	component->SetGameObject(shared_from_this());
 
 	uint8 index = static_cast<uint8>(component->GetType());
@@ -122,11 +125,4 @@ void GameObject::AddComponent(shared_ptr<Component> component)
 	{
 		_scripts.push_back(dynamic_pointer_cast<MonoBehaviour>(component));
 	}
-}
-
-shared_ptr<Component> GameObject::GetFixedComponent(COMPONENT_TYPE type)
-{
-	uint8 index = static_cast<uint8>(type);
-	assert(index < FIXED_COMPONENT_COUNT);
-	return _components[index];
 }

@@ -2,28 +2,28 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Engine">
-      <UniqueIdentifier>{872a7245-ec2a-44a5-9011-c2c74f00fe83}</UniqueIdentifier>
+      <UniqueIdentifier>{53dd1d9c-afa2-43de-8545-b68fe1eb95c5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils">
-      <UniqueIdentifier>{61b36057-db80-4729-a14d-6c66067f8535}</UniqueIdentifier>
+      <UniqueIdentifier>{300f6233-f1b4-4f18-9360-c9bfe0308e34}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shader">
-      <UniqueIdentifier>{288f07a9-fedb-4e06-8050-28a9c22cb7a8}</UniqueIdentifier>
+      <UniqueIdentifier>{710a24eb-3b22-4cba-b53b-42897f27a6d4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Manager">
-      <UniqueIdentifier>{b3d8a888-2a59-4081-80da-6ef5df69979d}</UniqueIdentifier>
+      <UniqueIdentifier>{25b3214d-e145-4b49-8e9d-908a06998ffa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Object">
-      <UniqueIdentifier>{d8551de8-4447-4a51-a8b1-1a752099c2ad}</UniqueIdentifier>
+      <UniqueIdentifier>{dd23f47d-3ac2-4f96-9bfe-4a6fac248639}</UniqueIdentifier>
     </Filter>
     <Filter Include="Object\Test">
-      <UniqueIdentifier>{01c09d33-1795-47b9-a89e-2ab39c893d18}</UniqueIdentifier>
+      <UniqueIdentifier>{1cfe4b64-4ca1-4958-b16f-73f8ae1985c3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Object\Component">
-      <UniqueIdentifier>{be8915a6-51ed-413f-bfac-b3277af6dd3d}</UniqueIdentifier>
+      <UniqueIdentifier>{915d1c10-9db1-4fdb-887a-d0160f593ea1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Object\Resource">
-      <UniqueIdentifier>{623f08c3-bdd1-42a1-9650-195ba783ecbe}</UniqueIdentifier>
+      <UniqueIdentifier>{c5612518-9c4d-408d-926a-9312743d39fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -69,10 +69,10 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
+    <ClCompile Include="SceneManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
+    <ClCompile Include="Scene.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
@@ -164,10 +164,10 @@
     <ClInclude Include="GameObject.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
+    <ClInclude Include="SceneManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
+    <ClInclude Include="Scene.h">
       <Filter>Manager</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
@@ -235,6 +235,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shader\lighting.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\compute.fx">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

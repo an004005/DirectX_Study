@@ -7,9 +7,7 @@ public:
 	MonoBehaviour();
 	virtual ~MonoBehaviour();
 
-public:
-
 private:
-	virtual void FinalUpdate() sealed { } // mono에서는 사용불가.
+	virtual void FinalUpdate() sealed { }
 };
 

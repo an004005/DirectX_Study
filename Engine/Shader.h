@@ -6,20 +6,20 @@ enum class SHADER_TYPE : uint8
 	DEFERRED,
 	FORWARD,
 	LIGHTING,
+	COMPUTE,
 };
 
-
-enum class RASTERIZER_TYPE
+enum class RASTERIZER_TYPE : uint8
 {
-	CULL_NONE, // 전부 연산
-	CULL_FRONT, // 시계무시
-	CULL_BACK, // 반시계무시
+	CULL_NONE,
+	CULL_FRONT,
+	CULL_BACK,
 	WIREFRAME,
 };
 
-enum class DEPTH_STENCIL_TYPE // 깊이 판별 공식 설정
+enum class DEPTH_STENCIL_TYPE : uint8
 {
-	LESS, 
+	LESS,
 	LESS_EQUAL,
 	GREATER,
 	GREATER_EQUAL,
@@ -28,7 +28,6 @@ enum class DEPTH_STENCIL_TYPE // 깊이 판별 공식 설정
 	LESS_NO_WRITE, // 깊이 테스트(O) + 깊이 기록(X)
 };
 
-// Pixel shader 결과물이랑 Render target texture 결과랑 어떻게 섞을지
 enum class BLEND_TYPE : uint8
 {
 	DEFAULT,
@@ -46,15 +45,15 @@ struct ShaderInfo
 	D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 };
 
-
-// 일감 기술서 : 외주 인력들이 뭘 해야할지 기술
 class Shader : public Object
 {
 public:
 	Shader();
 	virtual ~Shader();
 
-	void Init(const wstring& path, ShaderInfo info = ShaderInfo(), const string& vs = "VS_Main", const string& ps = "PS_Main");
+	void CreateGraphicsShader(const wstring& path, ShaderInfo info = ShaderInfo(), const string& vs = "VS_Main", const string& ps = "PS_Main");
+	void CreateComputeShader(const wstring& path, const string& name, const string& version);
+	
 	void Update();
 
 	SHADER_TYPE GetShaderType() { return _info.shaderType; }
@@ -66,12 +65,16 @@ private:
 
 private:
 	ShaderInfo _info;
+	ComPtr<ID3D12PipelineState>			_pipelineState;
 
+	// GraphicsShader
 	ComPtr<ID3DBlob>					_vsBlob;
 	ComPtr<ID3DBlob>					_psBlob;
-	ComPtr<ID3DBlob>					_errBlob;
+	ComPtr<ID3DBlob>					_errBlob;	
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC  _graphicsPipelineDesc = {};
 
-	ComPtr<ID3D12PipelineState>			_pipelineState;
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC  _pipelineDesc = {};
+	// ComputeShader
+	ComPtr<ID3DBlob>					_csBlob;
+	D3D12_COMPUTE_PIPELINE_STATE_DESC   _computePipelineDesc = {};
 };
 

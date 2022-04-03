@@ -11,6 +11,7 @@ enum class KEY_TYPE
 	A = 'A',
 	S = 'S',
 	D = 'D',
+
 	Q = 'Q',
 	E = 'E',
 	Z = 'Z',
@@ -19,11 +20,11 @@ enum class KEY_TYPE
 
 enum class KEY_STATE
 {
-	NONE, // 아무것도 안누름
-	PRESS, // 누르는 순간(1프레임)
-	DOWN, // 계속 누르고 있기
-	UP, // 떼기
-	END // 카운트용
+	NONE,
+	PRESS,
+	DOWN,
+	UP,
+	END
 };
 
 enum
@@ -31,7 +32,6 @@ enum
 	KEY_TYPE_COUNT = static_cast<int32>(UINT8_MAX + 1),
 	KEY_STATE_COUNT = static_cast<int32>(KEY_STATE::END),
 };
-
 
 class Input
 {
@@ -53,6 +53,6 @@ private:
 
 private:
 	HWND _hwnd;
-	vector<KEY_STATE> _states; // 각 키에대한 스테이트를 저장(w, a, s d... 다 하나씩)
+	vector<KEY_STATE> _states;
 };
 

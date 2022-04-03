@@ -19,13 +19,12 @@ enum
 struct RenderTarget
 {
 	shared_ptr<Texture> target;
-	float clearColor[4]; // 초기 색상
+	float clearColor[4];
 };
 
 class RenderTargetGroup
 {
 public:
-	// depth stencil 따로 주는 이유는 공용으로 써야될 수 잇음
 	void Create(RENDER_TARGET_GROUP_TYPE groupType, vector<RenderTarget>& rtVec, shared_ptr<Texture> dsTexture);
 
 	void OMSetRenderTargets(uint32 count, uint32 offset);

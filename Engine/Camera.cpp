@@ -6,8 +6,8 @@
 #include "GameObject.h"
 #include "MeshRenderer.h"
 #include "Engine.h"
-#include "Shader.h"
 #include "Material.h"
+#include "Shader.h"
 
 Matrix Camera::S_MatView;
 Matrix Camera::S_MatProjection;
@@ -22,7 +22,6 @@ Camera::~Camera()
 
 void Camera::FinalUpdate()
 {
-	// view 행렬이란, 카메라의 world 행렬의 역행렬이므로
 	_matView = GetTransform()->GetLocalToWorldMatrix().Invert();
 
 	float width = static_cast<float>(GEngine->GetWindow().width);

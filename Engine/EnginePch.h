@@ -3,6 +3,7 @@
 // std::byte 사용하지 않음
 #define _HAS_STD_BYTE 0
 
+// 각종 include
 #include <windows.h>
 #include <tchar.h>
 #include <memory>
@@ -32,6 +33,7 @@ using namespace Microsoft::WRL;
 #include <DirectXTex/DirectXTex.h>
 #include <DirectXTex/DirectXTex.inl>
 
+// 각종 lib
 #pragma comment(lib, "d3d12")
 #pragma comment(lib, "dxgi")
 #pragma comment(lib, "dxguid")
@@ -43,6 +45,7 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "DirectXTex\\DirectXTex.lib")
 #endif
 
+// 각종 typedef
 using int8		= __int8;
 using int16		= __int16;
 using int32		= __int32;
@@ -69,14 +72,29 @@ enum class CBV_REGISTER : uint8
 
 enum class SRV_REGISTER : uint8
 {
-	// CBV_REGISTER 다음 번호부터 쓰기 위함
 	t0 = static_cast<uint8>(CBV_REGISTER::END),
 	t1,
 	t2,
 	t3,
 	t4,
+	t5,
+	t6,
+	t7,
+	t8,
+	t9,
 
 	END
+};
+
+enum class UAV_REGISTER : uint8
+{
+	u0 = static_cast<uint8>(SRV_REGISTER::END),
+	u1,
+	u2,
+	u3,
+	u4,
+
+	END,
 };
 
 enum
@@ -84,14 +102,16 @@ enum
 	SWAP_CHAIN_BUFFER_COUNT = 2,
 	CBV_REGISTER_COUNT = CBV_REGISTER::END,
 	SRV_REGISTER_COUNT = static_cast<uint8>(SRV_REGISTER::END) - CBV_REGISTER_COUNT,
-	REGISTER_COUNT = CBV_REGISTER_COUNT + SRV_REGISTER_COUNT,
+	CBV_SRV_REGISTER_COUNT = CBV_REGISTER_COUNT + SRV_REGISTER_COUNT,
+	UAV_REGISTER_COUNT = static_cast<uint8>(UAV_REGISTER::END) - CBV_SRV_REGISTER_COUNT,
+	TOTAL_REGISTER_COUNT = CBV_SRV_REGISTER_COUNT + UAV_REGISTER_COUNT
 };
 
 struct WindowInfo
 {
 	HWND	hwnd; // 출력 윈도우
-	int32	width;
-	int32	height;
+	int32	width; // 너비
+	int32	height; // 높이
 	bool	windowed; // 창모드 or 전체화면
 };
 
@@ -101,15 +121,15 @@ struct Vertex
 
 	Vertex(Vec3 p, Vec2 u, Vec3 n, Vec3 t)
 		: pos(p), uv(u), normal(n), tangent(t)
-	{}
+	{
+	}
 
-	Vec3 pos; // x, y, z
+	Vec3 pos;
 	Vec2 uv;
 	Vec3 normal;
 	Vec3 tangent;
 };
 
-// singleton macro
 #define DECLARE_SINGLE(type)		\
 private:							\
 	type() {}						\
@@ -121,20 +141,20 @@ public:								\
 		return &instance;			\
 	}								\
 
-#define GET_SINGLE(type) type::GetInstance()
+#define GET_SINGLE(type)	type::GetInstance()
 
+#define DEVICE				GEngine->GetDevice()->GetDevice()
+#define GRAPHICS_CMD_LIST	GEngine->GetGraphicsCmdQueue()->GetGraphicsCmdList()
+#define RESOURCE_CMD_LIST	GEngine->GetGraphicsCmdQueue()->GetResourceCmdList()
+#define COMPUTE_CMD_LIST	GEngine->GetComputeCmdQueue()->GetComputeCmdList()
 
-// DEVICE를 통해 무언가 하면 당장 실행됨
-#define DEVICE		GEngine->GetDevice()->GetDevice()
-// CMD_LIST를 통해 무언가 하면 나중에 모아서 execute할 때 실행됨
-#define CMD_LIST	GEngine->GetCmdQueue()->GetCmdList()
-#define RESOURCE_CMD_LIST GEngine->GetCmdQueue()->GetResourceCmdList()
-#define ROOT_SIGNATURE GEngine->GetRootSignature()->GetSignature()
+#define GRAPHICS_ROOT_SIGNATURE		GEngine->GetRootSignature()->GetGraphicsRootSignature()
+#define COMPUTE_ROOT_SIGNATURE		GEngine->GetRootSignature()->GetComputeRootSignature()
 
-#define INPUT GET_SINGLE(Input)
-#define DELTA_TIME GET_SINGLE(Timer)->GetDeltaTime()
+#define INPUT				GET_SINGLE(Input)
+#define DELTA_TIME			GET_SINGLE(Timer)->GetDeltaTime()
 
-#define CONST_BUFFER(type) GEngine->GetConstantBuffer(type)
+#define CONST_BUFFER(type)	GEngine->GetConstantBuffer(type)
 
 struct TransformParams
 {

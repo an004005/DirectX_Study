@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Input.h"
 
+
 void Input::Init(HWND hwnd)
 {
 	_hwnd = hwnd;
@@ -9,7 +10,6 @@ void Input::Init(HWND hwnd)
 
 void Input::Update()
 {
-	//각 프레임마다 업데이트하고, 한 프레임에서는 항상 같은 상태유지
 	HWND hwnd = ::GetActiveWindow();
 	if (_hwnd != hwnd)
 	{
@@ -26,7 +26,6 @@ void Input::Update()
 	for (uint32 key = 0; key < KEY_TYPE_COUNT; key++)
 	{
 		// 키가 눌려 있으면 true
-		// high order bit가 1이면 key가 down상태이다. (0000 0000)에서 (1000 0000) 이면 눌린 상태
 		if (asciiKeys[key] & 0x80)
 		{
 			KEY_STATE& state = _states[key];

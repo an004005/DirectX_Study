@@ -10,29 +10,28 @@ enum class LIGHT_TYPE : uint8
 
 struct LightColor
 {
-	Vec4 diffuse;
-	Vec4 ambient;
-	Vec4 specular;
+	Vec4	diffuse;
+	Vec4	ambient;
+	Vec4	specular;
 };
 
 struct LightInfo
 {
-	LightColor color;
-	Vec4 position;
-	Vec4 direction;
-	int32 lightType;
-	float range;
-	float angle;
-	int32 padding;
+	LightColor	color;
+	Vec4		position;
+	Vec4		direction;
+	int32		lightType;
+	float		range;
+	float		angle;
+	int32		padding;
 };
 
 struct LightParams
 {
 	uint32		lightCount;
 	Vec3		padding;
-	LightInfo	lights[50]; // 모든 빛 정보를 한번에 셋팅
+	LightInfo	lights[50];
 };
-
 
 class Light : public Component
 {
@@ -42,7 +41,6 @@ public:
 
 	virtual void FinalUpdate() override;
 	void Render();
-
 
 public:
 	const LightInfo& GetLightInfo() { return _lightInfo; }
@@ -59,12 +57,11 @@ public:
 
 	void SetLightIndex(int8 index) { _lightIndex = index; }
 
-
 private:
 	LightInfo _lightInfo = {};
 
 	int8 _lightIndex = -1;
-	shared_ptr<class Mesh> _volumeMesh; // 빛의 영역 확인
-	shared_ptr<class Material> _lightMaterial; // shader에 넘겨주는 인자용
+	shared_ptr<class Mesh> _volumeMesh;
+	shared_ptr<class Material> _lightMaterial;
 };
 

@@ -13,7 +13,6 @@ class Resources
 public:
 	void Init();
 
-	// 템플릿의 구현은 헤더에 만드는게 기본방법
 	template<typename T>
 	shared_ptr<T> Load(const wstring& key, const wstring& path);
 
@@ -46,8 +45,6 @@ private:
 	array<KeyObjMap, OBJECT_TYPE_COUNT> _resources;
 };
 
-
-// 구현
 template<typename T>
 inline shared_ptr<T> Resources::Load(const wstring& key, const wstring& path)
 {
@@ -93,8 +90,6 @@ shared_ptr<T> Resources::Get(const wstring& key)
 	return nullptr;
 }
 
-// Object 클래스의 GetType함수는 생성자가 실행되야 판별 가능
-// 이 함수는 클래스 자체로 판별하기 위해 사용.
 template<typename T>
 inline OBJECT_TYPE Resources::GetObjectType()
 {

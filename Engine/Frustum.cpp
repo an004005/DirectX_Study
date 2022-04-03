@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Frustum.h"
-#include "Frustum.h"
 #include "Camera.h"
 
 void Frustum::FinalUpdate()
@@ -11,7 +10,6 @@ void Frustum::FinalUpdate()
 
 	vector<Vec3> worldPos =
 	{
-		// Transforms a 3D vector by a given matrix, projecting the result back into w = 1.
 		::XMVector3TransformCoord(Vec3(-1.f, 1.f, 0.f), matInv),
 		::XMVector3TransformCoord(Vec3(1.f, 1.f, 0.f), matInv),
 		::XMVector3TransformCoord(Vec3(1.f, -1.f, 0.f), matInv),
@@ -32,7 +30,6 @@ void Frustum::FinalUpdate()
 
 bool Frustum::ContainsSphere(const Vec3& pos, float radius)
 {
-	// BoundingFrustum 이라는 헬퍼 사용해도 됨.
 	for (const Vec4& plane : _planes)
 	{
 		// n = (a, b, c)

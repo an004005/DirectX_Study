@@ -16,15 +16,15 @@ public:
 	const Vec3& GetLocalRotation() { return _localRotation; }
 	const Vec3& GetLocalScale() { return _localScale; }
 
-	// temp
+	// TEMP
 	float GetBoundingSphereRadius() { return max(max(_localScale.x, _localScale.y), _localScale.z); }
 
 	const Matrix& GetLocalToWorldMatrix() { return _matWorld; }
-	Vec3 GetWorldPosition() { return _matWorld.Translation(); } // world 포시지션은 world로 가는 행렬에서 translation부분 추출한것
+	Vec3 GetWorldPosition() { return _matWorld.Translation(); }
 
 	Vec3 GetRight() { return _matWorld.Right(); }
 	Vec3 GetUp() { return _matWorld.Up(); }
-	Vec3 GetLook() { return _matWorld.Backward(); } // 사용 lib이 오른손 좌표계라서 반대
+	Vec3 GetLook() { return _matWorld.Backward(); }
 
 	void SetLocalPosition(const Vec3& position) { _localPosition = position; }
 	void SetLocalRotation(const Vec3& rotation) { _localRotation = rotation; }
@@ -35,12 +35,13 @@ public:
 	weak_ptr<Transform> GetParent() { return _parent; }
 
 private:
+	// Parent 기준
 	Vec3 _localPosition = {};
 	Vec3 _localRotation = {};
-	Vec3 _localScale = {1.f, 1.f, 1.f};
+	Vec3 _localScale = { 1.f, 1.f, 1.f };
 
-	Matrix _matLocal = {};
-	Matrix _matWorld = {}; // 부모유무 상관없이 실제 world space로 가기 위한 행렬
+	Matrix _matLocal= {};
+	Matrix _matWorld = {};
 
 	weak_ptr<Transform> _parent;
 };
