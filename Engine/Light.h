@@ -41,6 +41,8 @@ public:
 	virtual ~Light();
 
 	virtual void FinalUpdate() override;
+	void Render();
+
 
 public:
 	const LightInfo& GetLightInfo() { return _lightInfo; }
@@ -51,11 +53,18 @@ public:
 	void SetAmbient(const Vec3& ambient) { _lightInfo.color.ambient = ambient; }
 	void SetSpecular(const Vec3& specular) { _lightInfo.color.specular = specular; }
 
-	void SetLightType(LIGHT_TYPE type) { _lightInfo.lightType = static_cast<int32>(type); }
+	void SetLightType(LIGHT_TYPE type);
 	void SetLightRange(float range) { _lightInfo.range = range; }
 	void SetLightAngle(float angle) { _lightInfo.angle = angle; }
 
+	void SetLightIndex(int8 index) { _lightIndex = index; }
+
+
 private:
 	LightInfo _lightInfo = {};
+
+	int8 _lightIndex = -1;
+	shared_ptr<class Mesh> _volumeMesh; // 빛의 영역 확인
+	shared_ptr<class Material> _lightMaterial; // shader에 넘겨주는 인자용
 };
 
